@@ -1,0 +1,16 @@
+You will need to email me when you have changed your survey for me to post on Piazza.
+
+Disclaimer: in the process of constructing feedback, I recorded my audio and got AI to rephrase my feedback in a concise, clear manner so that I can mark faster + you get more detailed feedback. I did not run any of the assignments through AI.
+
+Survey introduction
+You state that responses will be completely anonymous. Please avoid that wording, because it does not accurately describe how the responses are handled (via the course specific IDs). It is enough to say that you will not collect names, student numbers, or email addresses.
+
+Rating scales
+Many of your quantitative questions use a 1 to 5 scale. Please increase this to 1 to 7 or 1 to 10, since 1 to 5 is too narrow. Other than that, your survey is ready to deploy. (For instance, you can consider slightly agree or slightly disagree.)
+
+Internship question
+Your dropdown for number of internships completed offers 0, 1, 2, 3, or 4+. It seems unlikely many students will have completed 4 or more internships, so you could ask for a number instead of a dropdown. That said, if someone does report a high number, it may end up as an outlier you need to consider separately. Just something to think about if you want more accurate values.
+
+(-0.05 for minor changes required for the questionnaire)
+
+0.95/1
