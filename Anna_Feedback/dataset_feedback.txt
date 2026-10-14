@@ -1,0 +1,9 @@
+LinkedIn connections codebook
+Please recode "does not have LinkedIn" or "prefer not to say" as NA rather than 0. A student with no LinkedIn account has no connections to report, which is different from refusing to answer, and it would be unfair to treat either case as a true zero.
+For the actual connection count ranges, please use the midpoint of each range (for example, for a 0 to 100 range) rather than the category number. This matters if you run something like linear regression, since you want to be able to interpret a one-unit increase as an actual change in connections, not just a step between arbitrary categories. Please do the same for GPA. (-0.05)
+
+Consent and data cleaning
+You added a consent question, which you did not have to include, but since it is there, please remove any responses where the participant did not consent, even if they answered the rest of the survey. (-0.05)
+Row 57 also has a URL entered for the course-specific ID instead of a valid ID. Please clean this entry as well. If an ID was not clearly invalid, that is fine, but please make sure the dataset is actually cleaned rather than left as collected.
+
+0.9/1
