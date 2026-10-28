@@ -1,0 +1,29 @@
+STA304 Exploratory Data Analysis Feedback
+
+Disclaimer: in the process of constructing feedback, I recorded my audio and got AI to rephrase my feedback in a concise, clear manner so that I can mark faster + you get more detailed feedback. I did not run any of the assignments through AI.
+
+Margins
+
+Your left margin is too wide.
+
+Checking model assumptions
+
+You say the Q-Q plot and the residual density plot closely follow a normal distribution. I agree for the residual density plot. The Q-Q plot has a zigzag shape, so I would not say it follows the line closely. You say homogeneity of variance is unclear, and I agree with you on that.
+
+Notation for the coefficients
+
+You note that the number of internships has a statistically significant, negative relationship with job security confidence, and that sentence is fine. You write $\beta_1 = -0.042$, but you should write $\hat{\beta}_1$, because this is an estimator and you do not know the true parameter. You also use $\beta_1$ for several different values, including -0.042, -0.04, and -0.20. I think this is a typo and you meant $\hat{\beta}_1$, $\hat{\beta}_2$, and $\hat{\beta}_3$. Reusing one symbol for different coefficients is a big problem, because it makes it unclear which coefficient each statement refers to.
+
+One-sample z-test for the proportion
+
+You tested whether the proportion of students who feel prepared for the workforce is greater than 0.5. You failed to reject the null hypothesis, which is that the proportion equals 0.5. That does not support concluding that students in your sample do not generally feel their degree prepared them. To conclude that, you would have needed to set the alternative to a proportion less than 0.5, and you might have seen a significant result. As you conducted the test, the conclusion does not follow.
+
+Grade breakdown
+
+Checking Model Assumptions (0.37 / 0.4)
+Interpretation of whether the assumptions were violated (0.07 / 0.1). I deducted 0.03 because the Q-Q plot is described as closely following a normal distribution, but it has a zigzag shape.
+
+Computing Statistical Tests (0.33 / 0.4)
+Directional conclusions for significant effects (0.8 / 0.15). I deducted 0.07 because the conclusion from the z-test is not supported. Failing to reject a null hypothesis that the proportion equals 0.5 does not show that students do not feel prepared.
+
+Total (1.90 / 2)
