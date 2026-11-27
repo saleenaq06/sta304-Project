@@ -29,6 +29,23 @@ rq1_palettes <- list("Orange / Blue"  = c("#E69F00", "#0072B2"),
 
 # ----------------------- End of set up for RQ1 ----------------------------
 
+# -------------- Set up for RQ3 (Solomon) --------------------
+# Survey question: "How well do you feel your degree has prepared you for the workforce?"
+# Coded 1 = Strongly prepared ... 7 = Strongly unprepared
+rq3_levels <- c("Strongly prepared", "Moderately prepared", "Slightly prepared",
+                "Neutral / Undecided", "Slightly unprepared",
+                "Moderately unprepared", "Strongly unprepared")
+data_df$Preparedness <- factor(data_df$Workforce.Preparedness, levels = 1:7, labels = rq3_levels)
+
+# Same grouping as the EDA: strongly, moderately or slightly prepared (1 to 3) count as prepared,
+# every other answer, including neutral, counts as not prepared
+data_df$Prepared <- data_df$Workforce.Preparedness <= 3
+
+# Dark blue vs light grey differ in brightness, so they stay distinct for colour-blind readers
+rq3_colours <- c("Prepared" = "#2F5D8C", "Not prepared" = "#B0B7C3")
+
+# ----------------------- End of set up for RQ3 ----------------------------
+
 # the sidebars are just filler code so you can run it and see what the app looks like
 # change the code to fit your data <3
 ui <- page_navbar(
@@ -65,9 +82,15 @@ ui <- page_navbar(
   nav_panel("RQ3: Degree of Preparation",
             layout_sidebar(
               sidebar = sidebar(
-                selectInput("var3", "Variable:", choices = c("mpg", "hp", "wt"))
+                checkboxGroupInput("rq3_status", "Citizenship status:",
+                                   choices = c("Domestic", "International"),
+                                   selected = c("Domestic", "International")),
+                checkboxGroupInput("rq3_year", "Year of study:",
+                                   choices = c("Third Year" = 3, "Fourth Year" = 4, "Fifth Year or Higher" = 5),
+                                   selected = c(3, 4, 5))
                 ),
-              plotOutput("plot3")
+              card(plotOutput("plot3")),
+              card(card_header("What does this mean?"), uiOutput("rq3_text"))
               )
             ),
   
@@ -152,9 +175,74 @@ server <- function(input, output) {
 
 
   # ---------- TAB 3: RQ3 (Solomon) ----------------
+  # Data after the citizenship and year-of-study filters
+  rq3_data <- reactive({
+    data_df[data_df$Status %in% input$rq3_status &
+              data_df$Year.of.Study %in% input$rq3_year, ]
+  })
+
   output$plot3 <- renderPlot({
-    ggplot(mtcars, aes(x = .data[[input$var3]])) + geom_histogram(bins = 10, fill = "coral", color = "grey")
-    })
+    d <- rq3_data()
+    validate(need(nrow(d) > 0, "Select at least one citizenship status and one year of study."))
+
+    # One row per answer, keeping answers that nobody in this selection picked
+    counts <- as.data.frame(table(Preparedness = d$Preparedness))
+    counts$Group <- ifelse(as.integer(counts$Preparedness) <= 3, "Prepared", "Not prepared")
+    counts$Label <- sprintf("%d (%.0f%%)", counts$Freq, 100 * counts$Freq / nrow(d))
+
+    ggplot(counts, aes(x = Freq, y = Preparedness, fill = Group)) +
+      geom_col(width = 0.6) +
+      geom_text(aes(label = Label), hjust = -0.1, size = 5) +
+      scale_y_discrete(limits = rev(rq3_levels)) +   # puts "Strongly prepared" at the top
+      scale_x_continuous(breaks = function(l) pretty(l)[pretty(l) %% 1 == 0],   # whole students only
+                         expand = expansion(mult = c(0, 0.3))) +           # room for the labels
+      scale_fill_manual(values = rq3_colours, breaks = names(rq3_colours)) +
+      labs(title = "How Well Do Students Feel Their Degree\nPrepared Them for the Workforce?",
+           subtitle = sprintf("Based on %d students", nrow(d)),
+           x = "Number of Students",
+           y = "Survey Response",
+           fill = "Counted as") +
+      theme_minimal(base_size = 15)
+  })
+
+  output$rq3_text <- renderUI({
+    d <- rq3_data()
+    n <- nrow(d)
+    if (n == 0) return(p("Select at least one citizenship status and one year of study."))
+
+    # One-sample z-test for a proportion, following the TA's feedback on the EDA
+    # H0: p = 0.5 vs H1: p < 0.5 (fewer than half of students feel prepared)
+    x     <- sum(d$Prepared)
+    p_hat <- x / n
+    z     <- (p_hat - 0.5) / sqrt(0.5 * 0.5 / n)
+    p_val <- pnorm(z)   # lower tail, since H1 is p < 0.5
+    p_txt <- if (p_val < 0.001) "p < 0.001" else sprintf("p = %.3f", p_val)
+
+    tagList(
+      p(strong(if (p_val < 0.05) {
+        sprintf("%.0f%% feel prepared. This is enough evidence to say that fewer than half of students
+                 feel prepared.", 100 * p_hat)
+      } else {
+        sprintf("%.0f%% feel prepared. There is not enough evidence that fewer than half of students
+                 feel prepared.", 100 * p_hat)
+      })),
+      p(sprintf("%d of the %d students in this selection said their degree left them strongly, moderately
+                 or slightly prepared for the workforce. Every other answer, including neutral, counts as
+                 not prepared.", x, n)),
+      p(if (p_val < 0.05) {
+        sprintf("We tested whether fewer than half of students feel prepared (one-sample z-test, z = %.2f, %s).
+                 The p-value is below 0.05, so a result this low would be unlikely if half of students
+                 felt prepared.", z, p_txt)
+      } else {
+        sprintf("We tested whether fewer than half of students feel prepared (one-sample z-test, z = %.2f, %s).
+                 The p-value is not below 0.05, so this selection does not give strong enough evidence that
+                 fewer than half feel prepared. This test only checks for fewer than half, so it also does
+                 not show that more than half feel prepared.", z, p_txt)
+      }),
+      if (n < 20) p(em(sprintf("Only %d students are in this selection. The z-test needs at least 20 to be
+                                reliable, so treat this result with caution.", n)))
+    )
+  })
   }
 
 shinyApp(ui, server)
