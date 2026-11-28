@@ -169,17 +169,32 @@ ui <- page_navbar(
             card(
               card_header("About the Survey & Methodology"),
               markdown("
-              ## Background
-              blah blah blah.. talk about our project... what are we exploring
-              
-              ## Sampling and Data Collection
-              Our current population is this and our sample was that and we collected the data like this...
-              are you still reading? hi hi hello
-              
-              ## Caveats and Limitations
-              So we were limited by our limitations that limited us and this is some more filler...
-              If you've read this far, I offer you a nice quote: 
-                       'It's time to see what I can do, to test the limits and break through.' — Frozen
+## Background
+This project explores student confidence in the current job market. We surveyed Fall 2026 STA304H5 students to answer three questions:
+
+1. RQ1: How does job market confidence differ between international and domestic students?
+2. RQ2: How strongly do the number of internships/work experiences, GPA, and number of LinkedIn followers influence student confidence?
+3. RQ3: What proportion of students believe their degree has prepared them for the workforce?
+
+## Sampling and Data Collection
+Target population: Fall 2026 STA304H5 students.
+
+Ideal design: With no constraints, we would use stratified sampling by domestic/international status and year of study. We would get the class list (with permission) from the instructor, split students into strata, and draw a simple random sample within each stratum. Participants would be entered into a raffle for a $50 gift card of their choice, with a reminder email two weeks later offering double raffle entries to improve response rates.
+
+Actual design: The data contains 61 student responses. We used convenience sampling. The survey was posted on the course Piazza page, and students were encouraged to participate. The survey was open for two weeks, with a reminder post on Piazza after one week.
+
+## Statistical Methods
+- Welch two-sample t-test (RQ1): compares mean confidence (Likert scale) between domestic and international students.
+- One-sample Z-test for a proportion (RQ3): tests whether more than 50% of students feel prepared. Students who feel moderately or strongly prepared count as prepared; all other responses, including neutral, count as not prepared.
+- Multiple linear regression (RQ2): predicts confidence from internship/work experience, GPA, and LinkedIn followers. T-tests assess each coefficient, and an F-test assesses the model as a whole.
+
+## Caveats and Limitations
+- Our respondents are a convenience sample, not a random sample, so results may not generalise to all students.
+- Confidence and preparedness are measured on a Likert (ordinal) scale, so means and fitted lines should be read with caution.
+- Responses are self-reported, so they may be affected by social desirability or inaccurate recall (e.g. GPA, LinkedIn followers).
+- With a small sample, subgroup comparisons can be noisy, and the regression may be sensitive to outliers (e.g. a few students with very large LinkedIn followings).
+- Because the study is observational, the regression shows association, not causation.
+
                       ")
               )
             )
